@@ -1,6 +1,7 @@
 import { useMovieStore } from "@/src/store/movies-store"
 import { server } from "@/src/utils/server"
 import { FontAwesome6 } from "@expo/vector-icons"
+import { set } from "date-fns"
 import { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 
@@ -9,9 +10,10 @@ type Props = {
 }
 
 export const MovieWatch = ({ movieId }: Props) => {
-   const { movies, setMovies, getMovies, getMovieWatched, verifyMovieWatched } = useMovieStore()
+   const { movies, setMovies, getMovies } = useMovieStore()
 
    const [watched, setWatched] = useState(false)
+   const [willWatch, setWillWatch] = useState(false)
 
    const handleWatchPress = async () => {
       try {
@@ -62,32 +64,52 @@ export const MovieWatch = ({ movieId }: Props) => {
    }
 
    useEffect(() => {
-      getMovieWatched(movieId)
-         .then(res => setWatched(res?.watched || false))
+      // getUserMovieInfo(movieId)
+      //    .then(res => {
+      //       if (res !== null) {
+      //          setWatched(res.watched || false)
+      //          setWillWatch(res.willWatch || false)
+      //       }
+      //    })
    }, [])
 
    return (
       <View className="flex-row justify-between items-center">
-         {watched ?
-            <TouchableOpacity
-               onPress={() => verifyMovieWatched(movieId)}
-               // onPress={fetchWatchedStatus}
-               className="flex-row items-center gap-2">
-               <FontAwesome6 name="face-smile-wink" size={24} color="#2563eb" />
 
-               <Text className="text-xl text-blue-600 font-bold">Já assisti</Text>
-            </TouchableOpacity> :
+         <TouchableOpacity
+            // onPress={() => toggleMovieWatched(movieId)}
+            // onPress={fetchWatchedStatus}
+            className="flex-row items-center gap-2">
+            <View className="flex-row items-center gap-2">
+               <FontAwesome6
+                  name="face-smile-wink"
+                  size={24}
+                  color={watched ? "#2563EB" : "#4B5563"} />
 
-            <TouchableOpacity
-               onPress={() => verifyMovieWatched(movieId)}
-               // onPress={fetchWatchedStatus}
-               className="flex-row items-center gap-2">
-               <FontAwesome6 name="ticket" size={24} color="#2563eb" />
+               <Text
+                  className={`text-xl font-bold ${watched ? "text-blue-600" : "text-gray-600"}`}>
+                  Já assisti
+               </Text>
+            </View>
 
-               <Text className="text-xl text-blue-600 font-bold">Assistirei</Text>
-            </TouchableOpacity>
-         }
+         </TouchableOpacity> :
 
+         <TouchableOpacity
+            // onPress={() => toggleMovieWatched(movieId)}
+            // onPress={fetchWatchedStatus}
+            className="flex-row items-center gap-2">
+            <View className="flex-row items-center gap-2">
+               <FontAwesome6
+                  name="ticket"
+                  size={24}
+                  color={willWatch ? "#2563EB" : "#4B5563"} />
+
+               <Text
+                  className={`text-xl font-bold ${willWatch ? "text-blue-600" : "text-gray-600"}`}>
+                  Assistirei
+               </Text>
+            </View>
+         </TouchableOpacity>
       </View>
    )
 }

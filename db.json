@@ -1,3 +1,9 @@
 {
-   "movies": []
+  "movies": [
+    {
+      "id": 617126,
+      "watched": true,
+      "willWatch": false
+    }
+  ]
 }

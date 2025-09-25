@@ -23,33 +23,35 @@ export const MovieCard = ({ movie }: Props) => {
             source={{ uri: moviePosterUrl(movie.poster_path!) }}
             className="w-[120px] h-full rounded-tl-lg rounded-bl-lg" />
 
-         <View className="flex-1 p-3">
-            <Text
-               className="text-lg font-bold text-gray-800 truncate">
-               {movie.title}
-            </Text>
+         <View className="flex-1">
+            <View className="flex-1 p-3">
+               <Text
+                  className="text-lg font-bold text-gray-800 truncate">
+                  {movie.title}
+               </Text>
 
-            <View className="w-full flex-row justify-between items-center">
-               <Text className="text-xl text-blue-600 font-bold">
-                  📆 {format(new Date(movie.release_date), 'dd/MM/yyyy')}
+               <View className="w-full flex-row justify-between items-center">
+                  <Text className="text-xl text-blue-600 font-bold">
+                     📆 {format(new Date(movie.release_date), 'dd/MM/yyyy')}
+                  </Text>
+                  <Text className="text-xl text-blue-600 font-bold">
+                     ⭐ {movie.vote_average.toFixed(1)} / 10
+                  </Text>
+               </View>
+
+               <Text className="flex-1 text-gray-700 truncate" numberOfLines={4}>
+                  {movie.overview}
                </Text>
-               <Text className="text-xl text-blue-600 font-bold">
-                  ⭐ {movie.vote_average.toFixed(1)} / 10
-               </Text>
+
+               <MovieWatch movieId={movie.id} />
             </View>
 
-            <Text className="flex-1 text-gray-700 truncate" numberOfLines={4}>
-               {movie.overview}
-            </Text>
-
-            <View className="flex-row justify-between items-center">
-               <MovieWatch movieId={movie.id} />
-
+            <View className="flex-row justify-center items-center">
                <TouchableOpacity
                   onPress={handleClick}
-                  className="flex-row justify-center items-center gap-2">
+                  className="w-full flex-row justify-center items-center gap-2 py-1 rounded-br-lg bg-blue-200">
                   <Text className="text-xl text-blue-600 font-bold">
-                     Ver mais
+                     Ler mais informações
                   </Text>
 
                   <FontAwesome6 name="arrow-right" size={24} color="#2563EB" />

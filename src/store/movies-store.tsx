@@ -3,15 +3,12 @@ import { Movie } from "../types/movie"
 import { api } from "../utils/api"
 import { moviePosterUrl } from "../utils/movie-poster-url"
 import { MovieDetails } from "../types/movie-details"
-import { MovieWatched } from "../types/movie-watched"
 import { server } from "../utils/server"
+import { UserMovieWatch } from "../types/user-movie-watch"
 
 type MovieState = {
    movies: Movie[]
    setMovies: (movies: Movie[]) => void
-
-   moviesWatched: MovieWatched[]
-   setMoviesWatched: (moviesWatched: MovieWatched[]) => void
 
    getMovies: () => void
 
@@ -20,21 +17,15 @@ type MovieState = {
    searchMovies: (search: string) => Promise<Movie | null>
 
    // Watched 
-
-   getMovieWatched: (movieId: number) => Promise<MovieWatched | null>
-
-   getMoviesWatched: () => void
-
-   verifyMovieWatched: (movieId: number) => void
-
+   moviesWatched: UserMovieWatch[]
+   setMoviesWatched: (moviesWatched: UserMovieWatch[]) => void
 }
 
 export const useMovieStore = create<MovieState>((set, get) => ({
    movies: [],
    setMovies: (movies) => set({ movies }),
 
-   moviesWatched: [],
-   setMoviesWatched: (moviesWatched) => set({ moviesWatched }),
+
 
    getMovies: async () => {
       const response = await api.get('/movie/popular');
@@ -78,45 +69,7 @@ export const useMovieStore = create<MovieState>((set, get) => ({
    },
 
    // Watched
-
-   getMovieWatched: async (movieId: number) => {
-      const response = await api.get(`/movies?id=${movieId}`)
-      console.log(response.data.length)
-      if (response) {
-         alert(response.data)
-         return response.data as MovieWatched
-      }
-
-      return null
-   },
-
-   getMoviesWatched: async () => {
-      const response = await api.get('/movies')
-
-      const moviesWatchedList: MovieWatched[] = response.data
-
-      set({ moviesWatched: moviesWatchedList })
-   },
-
-   verifyMovieWatched: async (movieId: number) => {
-      const { getMovieWatched, getMoviesWatched } = get()
-
-      const response = await getMovieWatched(movieId)
-
-      if (response) {
-         await server.put(`/movies/${movieId.toString()}`, {
-            ...response,
-            watched: !response.watched
-         })
-      } else {
-         await server.post('/movies', {
-            id: movieId.toString(),
-            watched: true
-         })
-      }
-
-      getMoviesWatched()
-   },
-
+   moviesWatched: [],
+   setMoviesWatched: (moviesWatched) => set({ moviesWatched }),
 
 }))

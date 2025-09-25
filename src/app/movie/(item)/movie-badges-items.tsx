@@ -26,7 +26,7 @@ export const MovieBadgesItems = ({ title, movie, keyToMap }: Props) => {
                return (
                   <Text
                      key={keyValue}
-                     className='text-blue-600 bg-blue-100 px-4 py-2 rounded-full'>
+                     className='text-blue-600 bg-blue-200 px-4 py-2 rounded-full'>
                      {displayText}
                   </Text>
                );

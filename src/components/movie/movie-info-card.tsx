@@ -32,13 +32,13 @@ export const MovieInfoCard = ({ movie }: Props) => {
                </Text>
             </View>
 
-            <View>
+            <View className="w-full flex-row justify-between items-center">
                <Text className="flex-1 text-gray-700">
+                  {movie.id}
                </Text>
+
                <FontAwesome6 name="clock" size={16} color="#555" />
             </View>
-
-            <Text>{movie.id}</Text>
 
             <MovieWatch movieId={movie.id} />
          </View>

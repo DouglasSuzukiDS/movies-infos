@@ -8,6 +8,7 @@ import { formatMoney } from "@/src/utils/format-money"
 type Props = {
    movie: MovieDetails
 }
+
 export const MovieFound = ({ movie }: Props) => {
    return (
       <ScrollView className="flex-1 gap-6 bg-[#C6C6C7]">
@@ -40,10 +41,11 @@ export const MovieFound = ({ movie }: Props) => {
                <Text className="text-lg font-bold text-gray-800 mb-2">Informações</Text>
 
                {/* Original Title */}
-               <View className="mb-3">
+               <View className="justify-between flex-row">
                   <Text className='text-lg font-bold mb-1'>
                      Título original:
                   </Text>
+
                   <Text className="text-lg" numberOfLines={0}>
                      {movie.original_title}
                   </Text>
