@@ -71,7 +71,7 @@ export const useMovieStore = create<MovieState>((set, get) => ({
 
       return movies
    },
-   
+
    // Watched
    userMoviesWatch: [],
    setUserMoviesWatch: (userMoviesWatch: UserMovieWatch[]) => set({ userMoviesWatch }),
@@ -86,7 +86,6 @@ export const useMovieStore = create<MovieState>((set, get) => ({
       const { userMoviesWatch } = get()
 
       const movieInfo = userMoviesWatch.find((movie) => {
-         console.log(typeof movie.id)
          return movie.movieId === movieId
       }) || null
 
@@ -145,6 +144,8 @@ export const useMovieStore = create<MovieState>((set, get) => ({
       if (movie && movie.watched === false && movie.willWatch == false) {
          await server.delete(`/movies/${movie.id}`)
       }
+
+      await getUserMoviesWatch()
    }
 
 }))
