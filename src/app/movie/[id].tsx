@@ -31,8 +31,6 @@ export default function MovieDetailsPage() {
                   }
                })
             }
-
-            console.log('🎬 Movie details loaded:', res)
          })
    }, [id, navigation])
 

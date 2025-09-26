@@ -4,6 +4,7 @@ import { FontAwesome6 } from "@expo/vector-icons"
 import { format } from "date-fns"
 import { Image, Text, TouchableOpacity, View } from "react-native"
 import { MovieWatch } from "../../app/movie/(item)/movie-watch"
+import { formatRuntime } from "@/src/utils/format-runtime"
 
 type Props = {
    movie: MovieDetails
@@ -16,7 +17,7 @@ export const MovieInfoCard = ({ movie }: Props) => {
             source={{ uri: moviePosterUrl(movie.poster_path!) }}
             className="w-[120px] h-full rounded-tl-lg rounded-bl-lg" />
 
-         <View className="flex-1 p-3">
+         <View className="flex-1 justify-between p-3">
             <Text
                className="text-lg font-bold text-gray-800 truncate">
                {movie.title}
@@ -33,11 +34,11 @@ export const MovieInfoCard = ({ movie }: Props) => {
             </View>
 
             <View className="w-full flex-row justify-between items-center">
-               <Text className="flex-1 text-gray-700">
-                  {movie.id}
-               </Text>
+               <FontAwesome6 name="clock" size={24} color="#2563EB" />
 
-               <FontAwesome6 name="clock" size={16} color="#555" />
+               <Text className="text-xl text-blue-600 font-bold">
+                  {formatRuntime(movie.runtime)}
+               </Text>
             </View>
 
             <MovieWatch movieId={movie.id} />

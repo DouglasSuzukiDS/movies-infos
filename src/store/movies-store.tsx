@@ -14,18 +14,26 @@ type MovieState = {
 
    getMovieDetails: (id: string) => Promise<MovieDetails | null>
 
-   searchMovies: (search: string) => Promise<Movie | null>
+   searchMovies: (search: string) => Promise<Movie[] | null>
 
    // Watched 
-   moviesWatched: UserMovieWatch[]
-   setMoviesWatched: (moviesWatched: UserMovieWatch[]) => void
+   userMoviesWatch: UserMovieWatch[]
+   setUserMoviesWatch: (moviesWatch: UserMovieWatch[]) => void
+
+   getUserMoviesWatch: () => void
+
+   getUserMovieInfo: (movieId: number) => Promise<UserMovieWatch | null>
+
+   toggleUserMovieWatch: (movieId: number) => void
+
+   toggleUserMovieWillWatch: (movieId: number) => void
+
+   deleteUserMovieWatch: (movieId: number) => void
 }
 
 export const useMovieStore = create<MovieState>((set, get) => ({
    movies: [],
    setMovies: (movies) => set({ movies }),
-
-
 
    getMovies: async () => {
       const response = await api.get('/movie/popular');
@@ -36,8 +44,6 @@ export const useMovieStore = create<MovieState>((set, get) => ({
             poster_path: moviePosterUrl(movie.poster_path || '')
          }
       })
-
-      // console.log(JSON.stringify(moviesList, null, 2));
 
       set({ movies: moviesList })
    },
@@ -50,26 +56,95 @@ export const useMovieStore = create<MovieState>((set, get) => ({
          poster_path: moviePosterUrl(response.data.poster_path || '')
       }
 
-      console.log('Movie Details:', JSON.stringify(movieDetails, null, 2))
-
       return movieDetails
    },
 
    searchMovies: async (search: string) => {
       const response = await api.get(`/search/movie?query=${search}`)
 
-      const movieDetails: Movie = {
-         ...response.data,
-         poster_path: moviePosterUrl(response.data.poster_path || '')
-      }
+      const movies = response.data.results.map((movie: Movie) => {
+         return {
+            ...movie,
+            poster_path: moviePosterUrl(movie.poster_path || '')
+         }
+      })
 
-      console.log('Movie Details:', JSON.stringify(movieDetails, null, 2))
+      return movies
+   },
+   
+   // Watched
+   userMoviesWatch: [],
+   setUserMoviesWatch: (userMoviesWatch: UserMovieWatch[]) => set({ userMoviesWatch }),
 
-      return movieDetails
+   getUserMoviesWatch: async () => {
+      const response = await server.get('/movies')
+
+      set({ userMoviesWatch: response.data || [] })
    },
 
-   // Watched
-   moviesWatched: [],
-   setMoviesWatched: (moviesWatched) => set({ moviesWatched }),
+   getUserMovieInfo: async (movieId: number) => {
+      const { userMoviesWatch } = get()
+
+      const movieInfo = userMoviesWatch.find((movie) => {
+         console.log(typeof movie.id)
+         return movie.movieId === movieId
+      }) || null
+
+      return movieInfo
+   },
+
+   toggleUserMovieWatch: async (movieId: number) => {
+      const { getUserMovieInfo, getUserMoviesWatch, deleteUserMovieWatch } = get()
+
+      const movie = await getUserMovieInfo(movieId)
+
+      if (movie !== null) {
+         await server.put(`/movies/${movie.id}`, {
+            ...movie,
+            watched: movie.watched ? false : true,
+         })
+      } else {
+         await server.post('/movies', {
+            movieId,
+            watched: true,
+            willWatch: false
+         })
+      }
+
+      await getUserMoviesWatch()
+      await deleteUserMovieWatch(movieId)
+   },
+
+   toggleUserMovieWillWatch: async (movieId: number) => {
+      const { getUserMovieInfo, getUserMoviesWatch, deleteUserMovieWatch } = get()
+
+      const movie = await getUserMovieInfo(movieId)
+
+      if (movie !== null) {
+         await server.put(`/movies/${movie.id}`, {
+            ...movie,
+            willWatch: movie.willWatch ? false : true,
+         })
+      } else {
+         await server.post('/movies', {
+            movieId,
+            watched: false,
+            willWatch: true
+         })
+      }
+
+      await getUserMoviesWatch()
+      await deleteUserMovieWatch(movieId)
+   },
+
+   deleteUserMovieWatch: async (movieId: number) => {
+      const { getUserMovieInfo, getUserMoviesWatch } = get()
+
+      const movie = await getUserMovieInfo(movieId)
+
+      if (movie && movie.watched === false && movie.willWatch == false) {
+         await server.delete(`/movies/${movie.id}`)
+      }
+   }
 
 }))

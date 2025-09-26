@@ -5,10 +5,11 @@ import { useEffect } from "react"
 import { MovieCard } from "./movie-card"
 
 export const MovieList = () => {
-   const { movies, getMovies } = useMovieStore()
+   const { movies, getMovies, getUserMoviesWatch } = useMovieStore()
 
    useEffect(() => {
-      getMovies()
+      // getMovies()
+      getUserMoviesWatch()
    }, [movies])
 
    return (

@@ -11,5 +11,5 @@ export const formatRuntime = (totalMinutes: number) => {
    // O formato 'h' e 'mm' são padrões, e o texto literal é entre aspas simples
    const formattedHour = format(dateWithMinutes, "H'h' mm'min'")
 
-   return 123
+   return formattedHour
 }
